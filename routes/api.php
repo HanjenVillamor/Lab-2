@@ -4,23 +4,29 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 
-// Public
+// Public Routes
 Route::post('/login', [AuthController::class, 'login']);
 
-// Protected (kailangan ng Bearer token)
+// Protected Routes
 Route::middleware('auth:sanctum')->group(function () {
 
+    // Authentication
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
 
-    // Admin at Regular User: pwedeng tumingin
+    // Admin and Regular User
     Route::get('/students', [StudentController::class, 'index']);
-    Route::get('/students/{id}', [StudentController::class, 'show']);
+    Route::get('/students/{student}', [StudentController::class, 'show']);
 
-    // Admin lang
+    // Admin Only
     Route::middleware('role:admin')->group(function () {
+
         Route::post('/students', [StudentController::class, 'store']);
-        Route::put('/students/{id}', [StudentController::class, 'update']);
-        Route::delete('/students/{id}', [StudentController::class, 'destroy']);
+
+        Route::put('/students/{student}', [StudentController::class, 'update']);
+
+        Route::delete('/students/{student}', [StudentController::class, 'destroy']);
+
     });
+
 });
